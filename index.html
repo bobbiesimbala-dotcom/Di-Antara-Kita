@@ -1,0 +1,998 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#241b38">
+<title>Di Antara Kita ♡</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
+
+:root {
+  --pink: #f4b5d0;
+  --light: #ffe3ef;
+  --purple: #c9a6e9;
+  --dark: #241b38;
+  --card: #342644;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  color: white;
+  background:
+    radial-gradient(circle at 15% 10%, #69466d 0, transparent 30%),
+    radial-gradient(circle at 90% 40%, #49365e 0, transparent 30%),
+    var(--dark);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+button, a {
+  font-family: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.navbar {
+  width: min(1100px, 92%);
+  margin: auto;
+  padding: 22px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand {
+  font-weight: 700;
+  color: var(--light);
+  letter-spacing: 2px;
+  font-size: 15px;
+}
+
+.nav-tag {
+  font-size: 11px;
+  color: #f4c8e1;
+  border: 1px solid #f4c8e155;
+  border-radius: 30px;
+  padding: 8px 13px;
+}
+
+/* KONTROL MUSIK */
+.menu-audio {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 13px;
+  border: 1px solid #f4b5d066;
+  border-radius: 30px;
+  background: #241b38eF;
+  box-shadow: 0 5px 20px #0005;
+  backdrop-filter: blur(12px);
+}
+
+.menu-audio button {
+  border: none;
+  background: transparent;
+  color: #ffe3ef;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.menu-audio input {
+  width: 75px;
+  accent-color: #f4b5d0;
+  cursor: pointer;
+}
+
+.hero {
+  width: min(1000px, 90%);
+  margin: 35px auto 75px;
+  text-align: center;
+  position: relative;
+}
+
+.eyebrow {
+  color: var(--pink);
+  font-size: 11px;
+  letter-spacing: 4px;
+  margin-bottom: 18px;
+}
+
+h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(39px, 8vw, 76px);
+  line-height: 1.12;
+  color: #ffe3ef;
+  text-shadow: 0 5px 25px #ed9bc955;
+}
+
+.hero-subtitle {
+  max-width: 570px;
+  margin: 18px auto 25px;
+  color: #e4d7eb;
+  font-size: 14px;
+  line-height: 1.9;
+}
+
+.hero-image {
+  width: 100%;
+  max-width: 760px;
+  height: 300px;
+  margin: 30px auto;
+  border-radius: 25px;
+  overflow: hidden;
+  border: 1px solid #ffffff35;
+  box-shadow: 0 15px 50px #0005;
+  position: relative;
+  background: linear-gradient(135deg, #a878a8, #f1b7cf);
+}
+
+.hero-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-label {
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+  background: #241b38bb;
+  padding: 9px 14px;
+  border-radius: 30px;
+  font-size: 11px;
+  backdrop-filter: blur(8px);
+}
+
+.start-btn {
+  display: inline-block;
+  border: none;
+  border-radius: 50px;
+  padding: 16px 32px;
+  background: linear-gradient(110deg, #f3a9ca, #bd9be8);
+  color: #35213e;
+  font-weight: 700;
+  font-size: 14px;
+  box-shadow: 0 7px 25px #e99bc955;
+  cursor: pointer;
+  transition: .25s;
+}
+
+.start-btn:active {
+  transform: scale(.96);
+}
+
+.small-note {
+  margin-top: 13px;
+  font-size: 11px;
+  color: #c8b4d4;
+}
+
+.section {
+  width: min(900px, 90%);
+  margin: 0 auto 75px;
+}
+
+.section-heading {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.section-heading h2 {
+  font-family: 'Playfair Display', serif;
+  color: #ffe0ef;
+  font-size: 30px;
+  margin-bottom: 8px;
+}
+
+.section-heading p {
+  color: #cbbbd6;
+  font-size: 13px;
+}
+
+.characters {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.character {
+  background: #ffffff0b;
+  border: 1px solid #ffffff20;
+  border-radius: 22px;
+  padding: 14px;
+  transition: .25s;
+}
+
+.character img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 15px;
+  background: #59415e;
+}
+
+.character h3 {
+  margin-top: 15px;
+  color: #ffd9ed;
+  font-family: 'Playfair Display', serif;
+  font-size: 23px;
+}
+
+.character p {
+  color: #d4c5df;
+  font-size: 12px;
+  line-height: 1.7;
+  margin-top: 7px;
+}
+
+.story-box {
+  background: linear-gradient(135deg, #493453, #342742);
+  border: 1px solid #ffffff22;
+  border-radius: 25px;
+  padding: 28px;
+  text-align: center;
+}
+
+.story-box .quote {
+  color: #f6c9df;
+  font-family: 'Playfair Display', serif;
+  font-size: 23px;
+  line-height: 1.6;
+}
+
+.story-box p {
+  color: #d8cadd;
+  font-size: 13px;
+  line-height: 1.8;
+  margin-top: 15px;
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.feature {
+  background: #ffffff0b;
+  border: 1px solid #ffffff1d;
+  border-radius: 16px;
+  padding: 18px;
+}
+
+.feature .emoji {
+  font-size: 25px;
+}
+
+.feature h3 {
+  color: #ffdaeb;
+  font-size: 14px;
+  margin: 10px 0 6px;
+}
+
+.feature p {
+  font-size: 11px;
+  line-height: 1.7;
+  color: #cbbbd6;
+}
+
+/* RATING DAN ULASAN */
+
+.rating-summary {
+  background: linear-gradient(135deg, #493453, #342742);
+  border: 1px solid #ffffff22;
+  border-radius: 22px;
+  padding: 23px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.rating-number {
+  font-family: 'Playfair Display', serif;
+  font-size: 42px;
+  color: #ffe3ef;
+}
+
+.rating-stars {
+  color: #ffd27a;
+  font-size: 23px;
+  letter-spacing: 3px;
+  margin: 5px 0;
+}
+
+.rating-count {
+  color: #cbbbd6;
+  font-size: 12px;
+}
+
+.review-form {
+  background: #ffffff0b;
+  border: 1px solid #ffffff20;
+  border-radius: 20px;
+  padding: 22px;
+  margin-bottom: 20px;
+}
+
+.review-form h3 {
+  color: #ffdaeb;
+  font-family: 'Playfair Display', serif;
+  font-size: 21px;
+  margin-bottom: 15px;
+}
+
+.review-form label {
+  display: block;
+  color: #e4d7eb;
+  font-size: 12px;
+  margin: 13px 0 7px;
+}
+
+.review-form input,
+.review-form select,
+.review-form textarea {
+  width: 100%;
+  padding: 12px;
+  border-radius: 11px;
+  border: 1px solid #ffffff25;
+  background: #241b38;
+  color: white;
+  outline: none;
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.review-form textarea {
+  resize: vertical;
+  min-height: 85px;
+}
+
+.review-form input:focus,
+.review-form select:focus,
+.review-form textarea:focus {
+  border-color: #f4b5d0;
+}
+
+.review-submit {
+  width: 100%;
+  margin-top: 17px;
+  padding: 13px;
+  border: none;
+  border-radius: 30px;
+  background: linear-gradient(110deg, #f3a9ca, #bd9be8);
+  color: #35213e;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.review-list {
+  display: grid;
+  gap: 12px;
+}
+
+.review-item {
+  background: #ffffff0b;
+  border: 1px solid #ffffff20;
+  border-radius: 17px;
+  padding: 17px;
+}
+
+.review-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.review-name {
+  color: #ffdaeb;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.review-stars {
+  color: #ffd27a;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.review-comment {
+  color: #d4c5df;
+  font-size: 12px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.review-empty {
+  text-align: center;
+  color: #cbbbd6;
+  font-size: 12px;
+  padding: 25px;
+  border: 1px dashed #ffffff30;
+  border-radius: 17px;
+}
+
+.footer {
+  text-align: center;
+  padding: 30px 15px 40px;
+  border-top: 1px solid #ffffff15;
+  color: #cdbbd8;
+  font-size: 12px;
+}
+
+.footer strong {
+  color: #ffcce3;
+}
+
+.heart {
+  position: fixed;
+  color: #f4b5d0;
+  opacity: .35;
+  pointer-events: none;
+  animation: float 5s ease-in-out infinite;
+}
+
+.heart.one {
+  top: 24%;
+  left: 5%;
+  font-size: 25px;
+}
+
+.heart.two {
+  top: 52%;
+  right: 5%;
+  font-size: 30px;
+  animation-delay: 1.5s;
+}
+
+.heart.three {
+  top: 78%;
+  left: 7%;
+  font-size: 19px;
+  animation-delay: 2s;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(-10deg); }
+  50% { transform: translateY(-15px) rotate(10deg); }
+}
+
+@media(max-width:600px) {
+  .hero {
+    margin-top: 45px;
+  }
+
+  .hero-image {
+    height: 210px;
+  }
+
+  .characters {
+    gap: 10px;
+  }
+
+  .character {
+    padding: 9px;
+  }
+
+  .character img {
+    height: 155px;
+  }
+
+  .character h3 {
+    font-size: 19px;
+  }
+
+  .character p {
+    font-size: 11px;
+  }
+
+  .story-box {
+    padding: 22px 17px;
+  }
+
+  .story-box .quote {
+    font-size: 20px;
+  }
+
+  .review-form {
+    padding: 17px;
+  }
+
+  .review-top {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .menu-audio {
+    right: 10px;
+    bottom: 10px;
+    padding: 9px 11px;
+  }
+
+  .menu-audio input {
+    width: 60px;
+  }
+}
+
+@media(prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="heart one">♡</div>
+<div class="heart two">♥</div>
+<div class="heart three">✧</div>
+
+<nav class="navbar">
+  <div class="brand">♡ DI ANTARA KITA</div>
+  <div class="nav-tag">A LITTLE LOVE STORY</div>
+</nav>
+
+<!-- AUDIO PLAYER -->
+<div class="menu-audio">
+  <audio id="menuMusic" loop preload="auto">
+    <source src="music/background.mp3" type="audio/mpeg">
+  </audio>
+
+  <button id="menuMusicToggle" type="button">
+    🎵 MUSIC OFF
+  </button>
+
+  <input
+    type="range"
+    id="menuMusicVolume"
+    min="0"
+    max="100"
+    value="30"
+    aria-label="Volume musik"
+  >
+</div>
+
+<main>
+
+<section class="hero">
+
+  <div class="eyebrow">✧ WELCOME TO OUR LITTLE WORLD ✧</div>
+
+  <h1>Di Antara<br>Kita ♡</h1>
+
+  <p class="hero-subtitle">
+    "Kadang, seseorang datang tanpa rencana.
+    Lalu perlahan, dia menjadi bagian dari cerita
+    yang nggak pernah kita bayangkan."
+  </p>
+
+  <div class="hero-image">
+    <img
+      src="https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=1200"
+      alt="Bunga-bunga romantis"
+    >
+    <div class="image-label">✿ Every story starts somewhere</div>
+  </div>
+
+  <a href="game.html" class="start-btn">
+    ✧ START YOUR STORY ♡
+  </a>
+
+  <div class="small-note">
+    A story about friendship, feelings, and growing together.
+  </div>
+
+</section>
+
+<section class="section">
+
+  <div class="section-heading">
+    <h2>Meet The Characters ♡</h2>
+    <p>Dua orang dengan cerita dan kepribadian berbeda.</p>
+  </div>
+
+  <div class="characters">
+
+    <article class="character">
+      <img
+        src="https://placehold.co/500x600/526d9d/ffffff?text=ARTHUR"
+        alt="Arthur"
+      >
+
+      <h3>Arthur</h3>
+
+      <p>
+        Sedikit humoris, perhatian, dan terkadang
+        terlalu banyak berpikir. Dia punya banyak
+        hal yang ingin disampaikan, meski nggak
+        selalu tahu caranya.
+      </p>
+    </article>
+
+    <article class="character">
+      <img
+        src="https://placehold.co/500x600/9d629f/ffffff?text=VIOLET"
+        alt="Violet"
+      >
+
+      <h3>Violet</h3>
+
+      <p>
+        Tenang, manis, dan sedikit introvert.
+        Dia nggak selalu banyak bicara, tetapi
+        punya cara sendiri untuk menunjukkan
+        kepeduliannya.
+      </p>
+    </article>
+
+  </div>
+</section>
+
+<section class="section">
+
+  <div class="section-heading">
+    <h2>A Story To Remember ✉</h2>
+    <p>Bukan cuma tentang cinta, tetapi juga tentang memahami.</p>
+  </div>
+
+  <div class="story-box">
+    <div class="quote">
+      "Bukan tentang siapa yang datang
+      paling cepat, tetapi siapa yang
+      mau saling memahami."
+    </div>
+
+    <p>
+      Ikuti perjalanan Arthur dan Violet.
+      Dari pertemuan sederhana, obrolan kecil,
+      kesalahpahaman, hingga keputusan yang
+      mengubah cerita mereka.
+    </p>
+  </div>
+</section>
+
+<section class="section">
+
+  <div class="section-heading">
+    <h2>What's Inside? ✧</h2>
+    <p>Beberapa hal yang akan kamu temukan.</p>
+  </div>
+
+  <div class="features">
+
+    <div class="feature">
+      <div class="emoji">💌</div>
+      <h3>Interactive Story</h3>
+      <p>Pilih jawabanmu dan ikuti perjalanan cerita.</p>
+    </div>
+
+    <div class="feature">
+      <div class="emoji">🌷</div>
+      <h3>Different Endings</h3>
+      <p>Setiap pilihan bisa membawa cerita ke akhir berbeda.</p>
+    </div>
+
+    <div class="feature">
+      <div class="emoji">🌙</div>
+      <h3>Emotional Moments</h3>
+      <p>Temukan momen lucu, hangat, dan penuh makna.</p>
+    </div>
+
+    <div class="feature">
+      <div class="emoji">♡</div>
+      <h3>Life Lessons</h3>
+      <p>Belajar tentang kejujuran, kepercayaan, dan menghargai diri sendiri.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- RATING DAN ULASAN PEMAIN -->
+
+<section class="section" id="reviews">
+
+  <div class="section-heading">
+    <h2>Player Reviews ♡</h2>
+    <p>Bagikan pendapatmu setelah memainkan cerita ini.</p>
+  </div>
+
+  <div class="rating-summary">
+    <div class="rating-number" id="averageRating">0.0</div>
+    <div class="rating-stars" id="averageStars">☆☆☆☆☆</div>
+    <div class="rating-count" id="ratingCount">
+      Belum ada ulasan pemain.
+    </div>
+  </div>
+
+  <div class="review-form">
+
+    <h3>Write Your Review ✉</h3>
+
+    <form id="reviewForm">
+
+      <label for="reviewName">Nama kamu</label>
+      <input
+        type="text"
+        id="reviewName"
+        maxlength="30"
+        placeholder="Masukkan nama..."
+        required
+      >
+
+      <label for="reviewRating">Berikan rating</label>
+      <select id="reviewRating" required>
+        <option value="5">★★★★★ - Sangat bagus</option>
+        <option value="4">★★★★☆ - Bagus</option>
+        <option value="3">★★★☆☆ - Cukup</option>
+        <option value="2">★★☆☆☆ - Kurang</option>
+        <option value="1">★☆☆☆☆ - Tidak bagus</option>
+      </select>
+
+      <label for="reviewComment">Ulasan kamu</label>
+      <textarea
+        id="reviewComment"
+        maxlength="300"
+        placeholder="Ceritakan pendapatmu tentang game ini..."
+        required
+      ></textarea>
+
+      <button type="submit" class="review-submit">
+        ♡ KIRIM ULASAN
+      </button>
+
+    </form>
+  </div>
+
+  <div class="review-list" id="reviewList">
+    <div class="review-empty">
+      Belum ada ulasan. Jadilah pemain pertama yang memberikan ulasan! ♡
+    </div>
+  </div>
+
+</section>
+
+</main>
+
+<footer class="footer">
+  <p>Made with ♡ and a little imagination.</p>
+  <p style="margin-top:10px">
+    Created by <strong>@notbbsz</strong>
+  </p>
+  <p style="margin-top:8px">
+    © 2026 DI ANTARA KITA
+  </p>
+</footer>
+
+<script>
+
+/* MUSIK MENU */
+
+const menuMusic = document.getElementById("menuMusic");
+const menuMusicToggle = document.getElementById("menuMusicToggle");
+const menuMusicVolume = document.getElementById("menuMusicVolume");
+
+menuMusic.volume = 0.3;
+
+menuMusicToggle.addEventListener("click", async function() {
+
+  if (menuMusic.paused) {
+
+    try {
+      await menuMusic.play();
+      menuMusicToggle.textContent = "🎵 MUSIC ON";
+
+    } catch (error) {
+
+      menuMusicToggle.textContent = "🎵 MUSIC OFF";
+
+      alert(
+        "Musik gagal diputar. Pastikan file background.mp3 berada satu folder dengan index.html."
+      );
+
+      console.error("Music error:", error);
+    }
+
+  } else {
+
+    menuMusic.pause();
+    menuMusicToggle.textContent = "🎵 MUSIC OFF";
+
+  }
+
+});
+
+menuMusicVolume.addEventListener("input", function() {
+  menuMusic.volume = Number(menuMusicVolume.value) / 100;
+});
+
+
+/* SISTEM ULASAN */
+
+const reviewForm = document.getElementById("reviewForm");
+const reviewList = document.getElementById("reviewList");
+
+function getReviews() {
+  try {
+    return JSON.parse(
+      localStorage.getItem("diAntaraKitaReviews") || "[]"
+    );
+  } catch (error) {
+    return [];
+  }
+}
+
+function saveReviews(reviews) {
+  try {
+    localStorage.setItem(
+      "diAntaraKitaReviews",
+      JSON.stringify(reviews)
+    );
+    return true;
+  } catch (error) {
+    alert("Ulasan tidak dapat disimpan di browser ini.");
+    return false;
+  }
+}
+
+function renderReviews() {
+
+  const reviews = getReviews();
+
+  reviewList.replaceChildren();
+
+  if (reviews.length === 0) {
+
+    const empty = document.createElement("div");
+    empty.className = "review-empty";
+    empty.textContent =
+      "Belum ada ulasan. Jadilah pemain pertama yang memberikan ulasan! ♡";
+
+    reviewList.appendChild(empty);
+
+  } else {
+
+    reviews.slice().reverse().forEach(review => {
+
+      const item = document.createElement("article");
+      item.className = "review-item";
+
+      const top = document.createElement("div");
+      top.className = "review-top";
+
+      const name = document.createElement("div");
+      name.className = "review-name";
+      name.textContent = review.name;
+
+      const stars = document.createElement("div");
+      stars.className = "review-stars";
+      stars.textContent =
+        "★".repeat(review.rating) +
+        "☆".repeat(5 - review.rating);
+
+      const comment = document.createElement("p");
+      comment.className = "review-comment";
+      comment.textContent = review.comment;
+
+      top.appendChild(name);
+      top.appendChild(stars);
+
+      item.appendChild(top);
+      item.appendChild(comment);
+
+      reviewList.appendChild(item);
+
+    });
+
+  }
+
+  updateRatingSummary(reviews);
+}
+
+function updateRatingSummary(reviews) {
+
+  const averageElement =
+    document.getElementById("averageRating");
+
+  const starsElement =
+    document.getElementById("averageStars");
+
+  const countElement =
+    document.getElementById("ratingCount");
+
+  if (reviews.length === 0) {
+
+    averageElement.textContent = "0.0";
+    starsElement.textContent = "☆☆☆☆☆";
+    countElement.textContent = "Belum ada ulasan pemain.";
+
+    return;
+  }
+
+  const total = reviews.reduce(
+    (sum, review) => sum + Number(review.rating), 0
+  );
+
+  const average = total / reviews.length;
+
+  averageElement.textContent = average.toFixed(1);
+
+  const rounded = Math.round(average);
+
+  starsElement.textContent =
+    "★".repeat(rounded) +
+    "☆".repeat(5 - rounded);
+
+  countElement.textContent =
+    reviews.length + " ulasan pemain";
+}
+
+reviewForm.addEventListener("submit", function(event) {
+
+  event.preventDefault();
+
+  const name =
+    document.getElementById("reviewName").value.trim();
+
+  const rating =
+    Number(document.getElementById("reviewRating").value);
+
+  const comment =
+    document.getElementById("reviewComment").value.trim();
+
+  if (!name || !comment || rating < 1 || rating > 5) {
+
+    alert("Tolong lengkapi nama, rating, dan ulasan kamu.");
+    return;
+
+  }
+
+  const reviews = getReviews();
+
+  reviews.push({
+    name: name,
+    rating: rating,
+    comment: comment
+  });
+
+  if (saveReviews(reviews)) {
+
+    reviewForm.reset();
+    renderReviews();
+
+    alert("Terima kasih sudah memberikan ulasan! ♡");
+
+  }
+
+});
+
+renderReviews();
+
+</script>
+
+</body>
+</html>

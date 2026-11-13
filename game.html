@@ -1,0 +1,1147 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Di Antara Kita</title>
+
+<style>
+* { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+body {
+  margin:0; overflow:hidden; font-family:Arial,sans-serif;
+  background:#10152c; color:white; touch-action:pan-y;
+}
+
+#game { position:fixed; inset:0; }
+#game canvas { display:block; }
+
+.topbar {
+  position:fixed; top:15px; left:15px; right:15px;
+  display:flex; justify-content:space-between; align-items:center;
+  pointer-events:none; z-index:3;
+}
+
+.logo { font-weight:bold; letter-spacing:2px; text-shadow:0 2px 8px black; }
+
+.stats {
+  background:#11152bba; border:1px solid #ffffff30;
+  padding:9px 13px; border-radius:12px; font-size:12px;
+}
+
+.start {
+  position:fixed; inset:0;
+  background:linear-gradient(#10152c99,#10152cdd);
+  display:flex; justify-content:center; align-items:center;
+  padding:18px; z-index:10; overflow-y:auto;
+}
+
+.start-card {
+  text-align:center; max-width:500px; width:100%;
+  padding:28px; background:#11152bef;
+  border:1px solid #ffffff30; border-radius:22px; margin:auto;
+}
+
+.start h1 { font-size:36px; letter-spacing:3px; margin-bottom:8px; }
+.start p { color:#ddd; line-height:1.6; }
+
+.main-button {
+  margin-top:15px; border:0;
+  background:linear-gradient(90deg,#a77aff,#f18cc9);
+  color:white; font-weight:bold; min-height:54px;
+  min-width:190px; padding:14px 28px;
+  border-radius:30px; cursor:pointer; font-size:15px;
+  touch-action:manipulation;
+}
+
+.main-button:active,.choice:active { transform:scale(.97); }
+
+.overlay {
+  position:fixed; inset:0; display:flex;
+  justify-content:center; align-items:end;
+  padding:12px; pointer-events:none; z-index:5;
+}
+
+.dialog {
+  pointer-events:auto; width:min(720px,100%);
+  padding:20px; border:1px solid #ffffff30;
+  border-radius:20px; background:#11152bef;
+  backdrop-filter:blur(12px); box-shadow:0 10px 40px #0008;
+}
+
+.chapter { color:#c9a7ff; font-size:12px; letter-spacing:2px; margin-bottom:10px; }
+.name { color:#ffb9df; font-size:20px; font-weight:bold; margin-bottom:8px; }
+.dialog p { line-height:1.6; min-height:50px; margin:0 0 18px; }
+.choices { display:grid; gap:10px; }
+
+.choice {
+  width:100%; min-height:54px; border:1px solid #c9a7ff66;
+  background:#ffffff0d; color:white; padding:14px;
+  border-radius:13px; text-align:left; font-size:15px;
+  cursor:pointer; touch-action:manipulation; transition:.2s;
+}
+
+.choice:active { background:#a77aff77; }
+.hidden { display:none !important; }
+.moral { color:#f3d3ff; font-style:italic; margin-top:15px; line-height:1.6; }
+
+/* =================================
+   MUSIC CONTROL
+================================= */
+
+.music-control {
+  position:fixed;
+  top:65px;
+  right:15px;
+  z-index:20;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:9px 12px;
+  background:#11152bdd;
+  border:1px solid #c9a7ff66;
+  border-radius:30px;
+  backdrop-filter:blur(10px);
+}
+
+.music-control button {
+  background:none;
+  border:none;
+  color:white;
+  font-size:14px;
+  cursor:pointer;
+}
+
+.music-control input {
+  width:65px;
+  accent-color:#c9a7ff;
+}
+
+@media(max-width:600px) {
+  .overlay { padding:9px; }
+  .dialog { padding:15px; margin-bottom:4px; border-radius:17px; }
+  .dialog p { font-size:14px; line-height:1.6; min-height:45px; }
+  .name { font-size:18px; }
+  .choice { min-height:55px; font-size:14px; padding:13px; }
+  .topbar { top:10px; left:10px; right:10px; }
+  .logo { font-size:11px; }
+  .stats { font-size:10px; padding:8px; }
+  .start-card { padding:22px; }
+  .start h1 { font-size:27px; }
+}
+
+@media(max-width:380px) {
+  .dialog { padding:12px; }
+  .choice { font-size:13px; }
+  .stats { font-size:9px; }
+}
+</style>
+</head>
+
+<body>
+
+<div id="game"></div>
+
+<div class="topbar">
+  <div class="logo">DI ANTARA KITA</div>
+  <div class="stats">
+    <span id="chapterStat">PROLOG</span>
+    &nbsp; | &nbsp;
+    Kedekatan: <span id="score">0</span>
+  </div>
+</div>
+
+<div class="start" id="startScreen">
+  <div class="start-card">
+    <div style="color:#d4adff;letter-spacing:4px">AN INTERACTIVE STORY</div>
+    <h1>DI ANTARA KITA</h1>
+    <p>
+      Dua orang, dua cerita, dan perasaan yang perlahan tumbuh.
+      Ikuti perjalanan Arthur dan Violet dalam kisah tentang
+      cinta, kepercayaan, dan kejujuran.
+    </p>
+    <p>Setiap pilihan punya arti.</p>
+    <button class="main-button" id="startButton">MULAI CERITA</button>
+    <p style="font-size:12px;margin-top:20px">Created with love by @notbbszz</p>
+  </div>
+</div>
+
+<div class="overlay hidden" id="dialogBox">
+  <div class="dialog">
+    <div class="chapter" id="chapterTitle">PROLOG</div>
+    <div class="name" id="characterName">Arthur</div>
+    <p id="dialogText"></p>
+    <div class="choices" id="choices"></div>
+  </div>
+</div>
+
+<!-- BACKGROUND MUSIC -->
+<audio id="bgMusic" loop preload="auto">
+  <source src="music/background.mp3" type="audio/mpeg">
+</audio>
+
+<!-- MUSIC BUTTON -->
+<div class="music-control">
+  <button id="musicToggle">🎵 OFF</button>
+  <input
+    type="range"
+    id="musicVolume"
+    min="0"
+    max="100"
+    value="30"
+  >
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<script>
+"use strict";
+
+// =================================
+// THREE.JS SCENE
+// =================================
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x10152c);
+scene.fog = new THREE.Fog(0x10152c,12,35);
+
+const camera = new THREE.PerspectiveCamera(
+  60,window.innerWidth/window.innerHeight,0.1,100
+);
+camera.position.set(0, 3.2, 7.5);
+camera.lookAt(0, 1.45, 0);
+
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(window.innerWidth,window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio,1.5));
+renderer.shadowMap.enabled = true;
+document.getElementById("game").appendChild(renderer.domElement);
+
+scene.add(new THREE.AmbientLight(0xffffff,0.8));
+
+const light = new THREE.DirectionalLight(0xffffff,1.2);
+light.position.set(5,10,7);
+light.castShadow = true;
+scene.add(light);
+
+const purpleLight = new THREE.PointLight(0x9d72ff,2,20);
+purpleLight.position.set(-5,4,3);
+scene.add(purpleLight);
+
+// =================================
+// ENVIRONMENT
+// =================================
+
+const floor = new THREE.Mesh(
+  new THREE.PlaneGeometry(100,100),
+  new THREE.MeshStandardMaterial({color:0x29334c})
+);
+floor.rotation.x = -Math.PI/2;
+floor.position.y = -0.05;
+scene.add(floor);
+
+const environmentGroup = new THREE.Group();
+scene.add(environmentGroup);
+
+function material(color) {
+  return new THREE.MeshStandardMaterial({color});
+}
+
+function addBox(x,y,z,w,h,d,color) {
+  const mesh = new THREE.Mesh(
+    new THREE.BoxGeometry(w,h,d),material(color)
+  );
+  mesh.position.set(x,y,z);
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  environmentGroup.add(mesh);
+  return mesh;
+}
+
+function makeTree(x,z) {
+  const trunk = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.12,0.18,2,8),material(0x654536)
+  );
+  trunk.position.set(x,1,z);
+  environmentGroup.add(trunk);
+
+  const leaves = new THREE.Mesh(
+    new THREE.SphereGeometry(1.1,12,12),material(0x315b49)
+  );
+  leaves.position.set(x,2.2,z);
+  environmentGroup.add(leaves);
+}
+
+function makeBench(x,z) {
+  addBox(x,0.55,z,2.1,0.13,0.55,0x795346);
+  addBox(x,0.95,z-0.23,2.1,0.7,0.12,0x795346);
+  for(let side of [-0.75,0.75]) {
+    addBox(x+side,0.25,z,0.12,0.55,0.12,0x51413b);
+  }
+}
+
+function clearEnvironment() {
+  while(environmentGroup.children.length > 0) {
+    const object = environmentGroup.children[0];
+    environmentGroup.remove(object);
+    if(object.geometry) object.geometry.dispose();
+    if(object.material) {
+      if(Array.isArray(object.material)) object.material.forEach(m=>m.dispose());
+      else object.material.dispose();
+    }
+  }
+}
+
+function buildSchool() {
+  addBox(0,2,-8,10,4,1,0xc6c5d3);
+  for(let x of [-3,0,3]) addBox(x,2.1,-7.43,1.4,1.5,0x83b4d5);
+  addBox(0,0.15,-3,12,0.2,8,0x777b83);
+  for(let x of [-5,5]) makeTree(x,-5);
+}
+
+function buildPark() {
+  for(let x of [-5,-3.5,3.5,5]) makeTree(x,-6);
+  makeBench(0,-2.5);
+  const colors = [0xf5a6c8,0xffd98e,0xb7a2ff];
+  for(let i=0;i<12;i++) {
+    const flower = new THREE.Mesh(
+      new THREE.SphereGeometry(0.12,8,8),material(colors[i%3])
+    );
+    flower.position.set((Math.random()-0.5)*9,0.15,-Math.random()*7);
+    environmentGroup.add(flower);
+  }
+}
+
+function buildCafe() {
+  addBox(0,2,-8,10,4,0.6,0x74554d);
+  addBox(0,4.1,-8,11,0.3,1,0x4a3544);
+  for(let x of [-3,0,3]) addBox(x,2.1,-7.6,1.5,1.5,0.1,0xe6bb9e);
+  for(let x of [-2,2]) {
+    addBox(x,0.8,-2,1.2,0.12,1.2,0x8e5e49);
+    addBox(x,0.4,-2,0.12,0.8,0.12,0x684a3d);
+  }
+}
+
+function buildBeach() {
+  addBox(0,-0.1,-9,30,0.1,7,0x418ca9);
+  addBox(0,0,-2,30,0.08,7,0xe7c38f);
+  const sun = new THREE.Mesh(
+    new THREE.SphereGeometry(1,20,20),
+    new THREE.MeshBasicMaterial({color:0xffcf8c})
+  );
+  sun.position.set(4,5,-10);
+  environmentGroup.add(sun);
+}
+
+function buildSunset() {
+  for(let x of [-5,5]) makeTree(x,-6);
+  makeBench(0,-3);
+  const sun = new THREE.Mesh(
+    new THREE.SphereGeometry(1.3,20,20),
+    new THREE.MeshBasicMaterial({color:0xffbd84})
+  );
+  sun.position.set(4,4,-12);
+  environmentGroup.add(sun);
+}
+
+function buildRain() {
+  addBox(0,2,-8,10,4,0.5,0x596579);
+  for(let x of [-3,0,3]) addBox(x,2,-7.7,1.5,1.5,0.1,0x8eacc2);
+  makeBench(0,-2.5);
+
+  const rainGeometry = new THREE.BufferGeometry();
+  const rainPositions = [];
+  for(let i=0;i<300;i++) {
+    rainPositions.push(
+      (Math.random()-0.5)*18,
+      Math.random()*10,
+      (Math.random()-0.5)*15
+    );
+  }
+  rainGeometry.setAttribute(
+    "position",new THREE.Float32BufferAttribute(rainPositions,3)
+  );
+  const rain = new THREE.Points(
+    rainGeometry,
+    new THREE.PointsMaterial({
+      color:0xaacbff,size:0.055,transparent:true,opacity:0.8
+    })
+  );
+  environmentGroup.add(rain);
+}
+
+function setEnvironment(type) {
+  clearEnvironment();
+  const settings = {
+    school:[0x899bb5,0x29334c],
+    park:[0x91b99d,0x365c45],
+    cafe:[0xb58c9b,0x493443],
+    sunset:[0xf0a77c,0x75505c],
+    rain:[0x586b85,0x26384e],
+    beach:[0xf2bd8a,0xe7c38f],
+    dawn:[0xb8a5d5,0x655b85]
+  };
+  const colors = settings[type] || settings.school;
+  scene.background.setHex(colors[0]);
+  scene.fog.color.setHex(colors[0]);
+  floor.material.color.setHex(colors[1]);
+
+  if(type==="school") buildSchool();
+  if(type==="park" || type==="dawn") buildPark();
+  if(type==="cafe") buildCafe();
+  if(type==="sunset") buildSunset();
+  if(type==="rain") buildRain();
+  if(type==="beach") buildBeach();
+}
+
+// =================================
+// CHARACTERS
+// =================================
+
+function createCharacter(clothesColor,hairColor,x,isViolet) {
+  const group = new THREE.Group();
+  const skin = material(0xf1c5a8);
+
+  const body = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.32,0.4,1.1,16),material(clothesColor)
+  );
+  body.position.y = 1.05;
+  group.add(body);
+
+  const neck = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.12,0.13,0.25,12),skin
+  );
+  neck.position.y = 1.72;
+  group.add(neck);
+
+  const head = new THREE.Mesh(
+    new THREE.SphereGeometry(0.42,24,24),skin
+  );
+  head.scale.set(0.92,1.08,0.85);
+  head.position.y = 2.05;
+  group.add(head);
+
+  const hair = new THREE.Mesh(
+    new THREE.SphereGeometry(0.44,20,20),material(hairColor)
+  );
+  hair.scale.set(1,0.78,0.94);
+  hair.position.set(0,2.35,-0.02);
+  group.add(hair);
+
+  for(let i=0;i<4;i++) {
+    const fringe = new THREE.Mesh(
+      new THREE.SphereGeometry(0.18,12,12),material(hairColor)
+    );
+    fringe.scale.set(1.2,0.65,0.7);
+    fringe.position.set(
+      -0.25 + i * 0.16,
+      2.30 - (i % 2) * 0.035,
+      0.28
+    );
+    group.add(fringe);
+  }
+
+  if(isViolet) {
+    for(let side of [-1,1]) {
+      const sideHair = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.13,0.13,0.9,12),material(hairColor)
+      );
+      sideHair.position.set(side*0.37,1.78,-0.02);
+      group.add(sideHair);
+    }
+  }
+
+  const eyeParts = [];
+  for(let side of [-1,1]) {
+    const eye = new THREE.Mesh(
+      new THREE.SphereGeometry(0.075,16,16),material(0xffffff)
+    );
+    eye.scale.set(1,1.2,0.35);
+    eye.position.set(side * 0.15, 2.08, 0.39);
+    group.add(eye);
+
+    const pupil = new THREE.Mesh(
+      new THREE.SphereGeometry(0.04,12,12),material(0x29202d)
+    );
+    pupil.position.set(side * 0.15, 2.075, 0.435);
+    group.add(pupil);
+
+    const shine = new THREE.Mesh(
+      new THREE.SphereGeometry(0.015,8,8),material(0xffffff)
+    );
+    shine.position.set(side*0.15+0.012,2.095,0.39);
+    group.add(shine);
+    eyeParts.push({eye,pupil,shine});
+  }
+
+  const eyebrows = [];
+  for(let side of [-1,1]) {
+    const brow = new THREE.Mesh(
+      new THREE.BoxGeometry(0.13,0.035,0.04),material(hairColor)
+    );
+    brow.position.set(side*0.15,2.21,0.34);
+    group.add(brow);
+    eyebrows.push(brow);
+  }
+
+  const blushes = [];
+  for(let side of [-1,1]) {
+    const blush = new THREE.Mesh(
+      new THREE.SphereGeometry(0.075,12,12),
+      new THREE.MeshBasicMaterial({color:0xff819e,transparent:true,opacity:0.25})
+    );
+    blush.scale.set(1.3,0.55,0.25);
+    blush.position.set(side*0.26,1.91,0.33);
+    group.add(blush);
+    blushes.push(blush);
+  }
+
+  const mouth = new THREE.Line(
+    new THREE.BufferGeometry(),
+    new THREE.LineBasicMaterial({color:0x984d5e})
+  );
+  mouth.position.set(0,1.86,0.36);
+  group.add(mouth);
+
+  for(let side of [-1,1]) {
+    const leg = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.12,0.13,0.7,8),material(0x252a3c)
+    );
+    leg.position.set(side*0.18,0.35,0);
+    group.add(leg);
+  }
+
+  group.position.x = x;
+  group.scale.set(1.2,1.2,1.2);
+  group.traverse(obj=>{if(obj.isMesh)obj.castShadow=true;});
+  scene.add(group);
+
+  return {group,eyeParts,eyebrows,blushes,mouth};
+}
+
+const arthur = createCharacter(0x526d9d,0x17151c,-1.2,false);
+const violet = createCharacter(0x9d629f,0x251a2d,1.2,true);
+
+// =================================
+// EXPRESSIONS
+// =================================
+
+function setExpression(character,expression) {
+  const eyes = character.eyeParts;
+  const brows = character.eyebrows;
+  let points = [];
+  let blushOpacity = 0.25;
+
+  eyes.forEach(part=>{
+    part.eye.scale.y=1.2;
+    part.pupil.visible=true;
+    part.shine.visible=true;
+  });
+  brows.forEach(brow=>{
+    brow.rotation.z=0;
+    brow.position.y=2.21;
+  });
+
+  if(expression==="happy") {
+    points=[
+      new THREE.Vector3(-0.13,-0.02,0),
+      new THREE.Vector3(-0.07,-0.07,0),
+      new THREE.Vector3(0,-0.08,0),
+      new THREE.Vector3(0.07,-0.07,0),
+      new THREE.Vector3(0.13,-0.02,0)
+    ];
+    blushOpacity=0.6;
+    eyes.forEach(p=>p.eye.scale.y=0.75);
+  } else if(expression==="shy") {
+    points=[
+      new THREE.Vector3(-0.07,-0.02,0),
+      new THREE.Vector3(0,-0.045,0),
+      new THREE.Vector3(0.07,-0.02,0)
+    ];
+    blushOpacity=0.95;
+  } else if(expression==="sad") {
+    points=[
+      new THREE.Vector3(-0.1,-0.04,0),
+      new THREE.Vector3(0,0.015,0),
+      new THREE.Vector3(0.1,-0.04,0)
+    ];
+    blushOpacity=0.15;
+    eyes.forEach(p=>p.eye.scale.y=0.8);
+    brows[0].rotation.z=-0.3;
+    brows[1].rotation.z=0.3;
+  } else if(expression==="surprised") {
+    points=[
+      new THREE.Vector3(0,-0.07,0),
+      new THREE.Vector3(0.035,-0.07,0),
+      new THREE.Vector3(0.035,-0.12,0),
+      new THREE.Vector3(0,-0.12,0),
+      new THREE.Vector3(-0.035,-0.12,0),
+      new THREE.Vector3(-0.035,-0.07,0),
+      new THREE.Vector3(0,-0.07,0)
+    ];
+    eyes.forEach(p=>p.eye.scale.y=1.5);
+    brows.forEach(b=>b.position.y=2.25);
+  } else if(expression==="angry") {
+    points=[
+      new THREE.Vector3(-0.1,-0.02,0),
+      new THREE.Vector3(0,-0.04,0),
+      new THREE.Vector3(0.1,-0.02,0)
+    ];
+    brows[0].rotation.z=0.3;
+    brows[1].rotation.z=-0.3;
+  } else {
+    points=[
+      new THREE.Vector3(-0.08,-0.04,0),
+      new THREE.Vector3(0,-0.04,0),
+      new THREE.Vector3(0.08,-0.04,0)
+    ];
+  }
+
+  character.blushes.forEach(b=>b.material.opacity=blushOpacity);
+  character.mouth.geometry.dispose();
+  character.mouth.geometry=new THREE.BufferGeometry().setFromPoints(points);
+}
+
+// =================================
+// STORY
+// =================================
+
+const story = [
+
+{
+  chapter:"PROLOG",
+  speaker:"Narator",
+  text:"Setiap orang punya cerita yang berbeda. Ada yang dimulai dengan tawa, ada juga yang dimulai dengan pertemuan sederhana. Dan bagi Arthur, semuanya bermula pada sebuah pagi yang sebenarnya tidak terlalu istimewa.",
+  scene:"school",a:"neutral",v:"neutral",
+  choices:[{text:"Mulai kisah mereka...",score:1}]
+},
+
+{
+  chapter:"BAB 1 — HARI PERTAMA",
+  speaker:"Arthur",
+  text:"Akhirnya sampai juga di sekolah. Jujur, aku masih agak canggung karena belum terlalu kenal banyak orang. Semoga hari ini nggak membosankan.",
+  scene:"school",a:"neutral",v:"neutral",
+  choices:[
+    {text:"Mencari kelas sambil melihat sekitar.",score:1},
+    {text:"Langsung masuk kelas.",score:0}
+  ]
+},
+
+{
+  chapter:"BAB 1 — HARI PERTAMA",
+  speaker:"Narator",
+  text:"Saat melewati lorong, Arthur melihat seorang perempuan berjalan sambil membawa beberapa buku. Tanpa sengaja, salah satu bukunya terjatuh.",
+  scene:"school",a:"surprised",v:"neutral",
+  choices:[
+    {text:"Segera membantu mengambil buku.",score:2},
+    {text:"Menunggu apakah dia membutuhkan bantuan.",score:1}
+  ]
+},
+
+{
+  chapter:"BAB 1 — HARI PERTAMA",
+  speaker:"Violet",
+  text:"Aduh... bukuku jatuh. Eh, kamu bisa bantu ambil yang itu nggak?",
+  scene:"school",a:"surprised",v:"shy",
+  choices:[
+    {text:"Bisa, sini aku bantu.",score:2},
+    {text:"Oh iya, sebentar ya.",score:1}
+  ]
+},
+
+{
+  chapter:"BAB 1 — HARI PERTAMA",
+  speaker:"Arthur",
+  text:"Ini bukunya. Banyak juga yang kamu bawa. Kamu mau ke kelas mana?",
+  scene:"school",a:"happy",v:"shy",
+  choices:[
+    {text:"Menawarkan bantuan mengantarnya.",score:2},
+    {text:"Bertanya namanya.",score:1}
+  ]
+},
+
+{
+  chapter:"BAB 1 — HARI PERTAMA",
+  speaker:"Violet",
+  text:"Makasih, ya. Aku Violet. Kelasnya di lantai dua. Kamu sendiri siapa?",
+  scene:"school",a:"happy",v:"happy",
+  choices:[
+    {text:"Aku Arthur. Senang kenal kamu.",score:2},
+    {text:"Arthur. Salam kenal, ya.",score:1}
+  ]
+},
+
+{
+  chapter:"BAB 1 — AWAL KENAL",
+  speaker:"Narator",
+  text:"Mereka berjalan bersama menuju tangga. Percakapannya memang sederhana, tetapi ada sesuatu yang membuat Arthur merasa hari itu sedikit berbeda.",
+  scene:"school",a:"happy",v:"happy",
+  choices:[{text:"Lanjutkan perjalanan.",score:1}]
+},
+
+{
+  chapter:"BAB 1 — AWAL KENAL",
+  speaker:"Arthur",
+  text:"Ngomong-ngomong, kamu memang suka baca buku? Soalnya dari tadi kelihatannya serius banget sama buku-buku itu.",
+  scene:"school",a:"neutral",v:"happy",
+  choices:[
+    {text:"Bertanya tentang buku favoritnya.",score:2},
+    {text:"Bercanda soal banyaknya buku.",score:2}
+  ]
+},
+
+{
+  chapter:"BAB 1 — AWAL KENAL",
+  speaker:"Violet",
+  text:"Hehe, iya. Aku suka baca kalau lagi bosan. Kadang baca novel, kadang cuma lihat-lihat cerita pendek.",
+  scene:"school",a:"happy",v:"shy",
+  choices:[
+    {text:"Wah, kapan-kapan rekomendasiin aku.",score:2},
+    {text:"Pantas saja kamu bawa banyak buku.",score:1}
+  ]
+},
+
+{
+  chapter:"BAB 2 — SEMAKIN DEKAT",
+  speaker:"Narator",
+  text:"Beberapa hari berlalu. Arthur dan Violet mulai sering berpapasan. Mereka mulai saling menyapa, meskipun terkadang hanya dengan senyuman kecil.",
+  scene:"park",a:"happy",v:"happy",
+  choices:[{text:"Lihat hari-hari berikutnya.",score:1}]
+},
+
+{
+  chapter:"BAB 2 — SEMAKIN DEKAT",
+  speaker:"Arthur",
+  text:"Eh, Violet! Tumben sendirian di taman. Lagi nunggu seseorang atau cuma mau cari udara segar?",
+  scene:"park",a:"happy",v:"happy",
+  choices:[
+    {text:"Duduk dan temani dia.",score:2},
+    {text:"Tanya bagaimana harinya.",score:2}
+  ]
+},
+
+{
+  chapter:"BAB 2 — SEMAKIN DEKAT",
+  speaker:"Violet",
+  text:"Nggak nunggu siapa-siapa kok. Aku cuma suka duduk di sini setelah sekolah. Suasananya tenang, nggak terlalu ramai.",
+  scene:"park",a:"happy",v:"neutral",
+  choices:[
+    {text:"Aku juga suka tempat yang tenang.",score:2},
+    {text:"Berarti kita punya kesukaan yang sama.",score:2}
+  ]
+},
+
+{
+  chapter:"BAB 2 — SEMAKIN DEKAT",
+  speaker:"Arthur",
+  text:"Kalau boleh tahu, selain baca buku, kamu suka melakukan apa lagi? Aku sendiri suka main gitar kalau lagi punya waktu luang.",
+  scene:"park",a:"neutral",v:"happy",
+  choices:[
+    {text:"Bercerita tentang musik.",score:2},
+    {text:"Mendengarkan cerita Violet.",score:2}
+  ]
+},
+
+{
+  chapter:"BAB 2 — SEMAKIN DEKAT",
+  speaker:"Violet",
+  text:"Aku suka dengar musik juga. Biasanya kalau lagi capek, aku pasang earphone terus dengar lagu favorit. Rasanya bisa bikin pikiran lebih tenang.",
+  scene:"park",a:"happy",v:"happy",
+  choices:[
+    {text:"Minta rekomendasi lagu.",score:2},
+    {text:"Bertukar lagu favorit.",score:2}
+  ]
+},
+
+{
+  chapter:"BAB 2 — SEBUAH KENANGAN",
+  speaker:"Narator",
+  text:"Sore itu mereka menghabiskan waktu dengan bercerita. Hal-hal kecil yang biasanya terasa biasa saja, sekarang justru menjadi sesuatu yang ingin mereka ingat.",
+  scene:"sunset",a:"happy",v:"happy",
+  choices:[{text:"Lanjutkan cerita.",score:1}]
+},
+
+{
+  chapter:"BAB 3 — HUJAN SORE",
+  speaker:"Arthur",
+  text:"Waduh, hujan. Padahal aku belum bawa payung. Kamu bawa payung nggak, Violet?",
+  scene:"rain",a:"surprised",v:"neutral",
+  choices:[
+    {text:"Menawarkan berteduh bersama.",score:2},
+    {text:"Mencari tempat berteduh.",score:1}
+  ]
+},
+
+{
+  chapter:"BAB 3 — HUJAN SORE",
+  speaker:"Violet",
+  text:"Aku juga nggak bawa. Sepertinya kita harus menunggu hujannya reda. Untung masih ada tempat berteduh di sini.",
+  scene:"rain",a:"neutral",v:"shy",
+  choices:[
+    {text:"Mengajaknya mengobrol.",score:2},
+    {text:"Membuat suasana jadi lebih santai.",score:2}
+  ]
+},
+
+{
+  chapter:"BAB 3 — HUJAN SORE",
+  speaker:"Arthur",
+  text:"Lucu juga, ya. Kita ketemu karena buku jatuh, sekarang malah terjebak hujan bareng. Sepertinya hari ini punya banyak kejutan.",
+  scene:"rain",a:"happy",v:"happy",
+  choices:[
+    {text:"Tertawa bersama Violet.",score:2},
+    {text:"Mengatakan bahwa hari ini menyenangkan.",score:2}
+  ]
+},
+
+{
+  chapter:"BAB 3 — HUJAN SORE",
+  speaker:"Violet",
+  text:"Iya, hehe. Aku juga nggak nyangka bakal ngobrol selama ini sama kamu. Biasanya aku lebih banyak diam kalau sama orang baru.",
+  scene:"rain",a:"shy",v:"shy",
+  choices:[
+    {text:"Aku senang kamu mulai nyaman.",score:2},
+    {text:"Nggak apa-apa, aku juga kadang begitu.",score:2}
+  ]
+},
+
+{
+  chapter:"BAB 4 — SALAH PAHAM",
+  speaker:"Narator",
+  text:"Beberapa hari kemudian, Arthur mencoba menghubungi Violet. Namun, pesan yang dikirimnya belum mendapat balasan. Arthur mulai bertanya-tanya apakah dirinya melakukan sesuatu yang salah.",
+  scene:"cafe",a:"sad",v:"neutral",
+  choices:[{text:"Tunggu sampai bertemu langsung.",score:1}]
+},
+
+{
+  chapter:"BAB 4 — SALAH PAHAM",
+  speaker:"Arthur",
+  text:"Violet, akhir-akhir ini kamu sibuk, ya? Aku sempat berpikir mungkin ada sesuatu yang bikin kamu nggak nyaman.",
+  scene:"cafe",a:"sad",v:"sad",
+  choices:[
+    {text:"Bertanya dengan tenang.",score:2},
+    {text:"Memberi Violet waktu untuk menjelaskan.",score:2}
+  ]
+},
+
+{
+  chapter:"BAB 4 — SALAH PAHAM",
+  speaker:"Violet",
+  text:"Maaf ya, Arthur. Beberapa hari ini aku memang banyak tugas dan ada urusan keluarga juga. Bukan karena aku menghindar dari kamu.",
+  scene:"cafe",a:"neutral",v:"sad",
+  choices:[
+    {text:"Nggak apa-apa, aku ngerti kok.",score:3},
+    {text:"Lain kali kabari aku kalau sempat, ya.",score:2}
+  ]
+},
+
+{
+  chapter:"BAB 4 — SALAH PAHAM",
+  speaker:"Arthur",
+  text:"Aku juga minta maaf kalau terlalu banyak berpikir. Aku cuma takut salah paham. Tapi aku nggak mau memaksamu untuk selalu membalas pesan dengan cepat.",
+  scene:"cafe",a:"happy",v:"shy",
+  choices:[
+    {text:"Yang penting kita saling mengerti.",score:3},
+    {text:"Kita mulai lagi dengan lebih baik.",score:2}
+  ]
+},
+{
+  chapter:"BAB 5 — PERASAAN",
+  speaker:"Narator",
+  text:"Seiring waktu, hubungan mereka semakin dekat. Arthur mulai menyadari bahwa perasaannya kepada Violet bukan sekadar rasa penasaran. Ada sesuatu yang tumbuh perlahan di dalam hatinya.",
+  scene:"sunset",a:"shy",v:"happy",
+  choices:[{text:"Lanjutkan.",score:1}]
+},
+
+{
+  chapter:"BAB 5 — PERASAAN",
+  speaker:"Arthur",
+  text:"Violet, boleh aku tanya sesuatu? Selama kita kenal, pernah nggak kamu merasa kalau ada seseorang yang kehadirannya bisa bikin hari kamu jadi lebih baik?",
+  scene:"sunset",a:"shy",v:"surprised",
+  choices:[
+    {text:"Menunggu jawaban Violet.",score:2},
+    {text:"Menjelaskan maksud pertanyaan.",score:2}
+  ]
+},
+
+{
+  chapter:"BAB 5 — PERASAAN",
+  speaker:"Violet",
+  text:"Pernah. Bahkan mungkin sekarang aku sedang merasakannya. Ada orang yang awalnya cuma teman ngobrol, tapi lama-lama jadi seseorang yang aku tunggu kehadirannya.",
+  scene:"sunset",a:"surprised",v:"shy",
+  choices:[
+    {text:"Apa orang itu aku?",score:2},
+    {text:"Tersenyum dan mendengarkan.",score:2}
+  ]
+},
+
+{
+  chapter:"BAB 5 — PENGAKUAN",
+  speaker:"Arthur",
+  text:"Violet, sebenarnya ada sesuatu yang sudah lama ingin aku sampaikan. Aku suka sama kamu. Bukan karena kamu harus jadi sempurna, tapi karena aku nyaman menjadi diriku sendiri saat bersamamu.",
+  scene:"sunset",a:"shy",v:"shy",
+  choices:[
+    {text:"Mengatakannya dengan tulus.",score:3},
+    {text:"Memberinya waktu untuk menjawab.",score:3}
+  ]
+},
+
+{
+  chapter:"BAB 5 — PENGAKUAN",
+  speaker:"Violet",
+  text:"Arthur... aku nggak tahu harus bilang apa. Aku senang kamu bisa jujur seperti ini. Aku juga merasa nyaman sama kamu, tapi aku ingin kita saling mengenal lebih jauh tanpa terburu-buru.",
+  scene:"sunset",a:"happy",v:"shy",
+  choices:[
+    {text:"Aku menghargai itu. Kita jalani perlahan.",score:3},
+    {text:"Aku nggak akan memaksamu.",score:3}
+  ]
+},
+
+{
+  chapter:"BAB 6 — DI ANTARA KITA",
+  speaker:"Narator",
+  text:"Sore semakin gelap. Arthur dan Violet berjalan meninggalkan taman. Tidak ada janji yang berlebihan, tidak ada kepastian yang dipaksakan. Hanya dua orang yang mulai belajar memahami satu sama lain.",
+  scene:"dawn",a:"happy",v:"happy",
+  choices:[{text:"Lihat akhir kisah mereka.",score:2}]
+}
+
+];
+
+// =================================
+// GAME SYSTEM
+// =================================
+
+let current = 0;
+let closeness = 0;
+
+const startScreen = document.getElementById("startScreen");
+const dialogBox = document.getElementById("dialogBox");
+const chapterTitle = document.getElementById("chapterTitle");
+const characterName = document.getElementById("characterName");
+const dialogText = document.getElementById("dialogText");
+const choicesBox = document.getElementById("choices");
+const scoreText = document.getElementById("score");
+const chapterStat = document.getElementById("chapterStat");
+
+// =================================
+// SHOW STORY
+// =================================
+
+function showStory() {
+
+  if(current >= story.length) {
+    showEnding();
+    return;
+  }
+
+  const item = story[current];
+
+  chapterTitle.textContent = item.chapter;
+  chapterStat.textContent = item.chapter.split(" — ")[0];
+  characterName.textContent = item.speaker;
+  dialogText.textContent = item.text;
+
+  setEnvironment(item.scene);
+  setExpression(arthur,item.a);
+  setExpression(violet,item.v);
+
+  dialogBox.classList.remove("hidden");
+  choicesBox.innerHTML = "";
+
+  item.choices.forEach(choice=>{
+
+    const button = document.createElement("button");
+    button.className = "choice";
+    button.textContent = choice.text;
+
+    button.addEventListener("click",()=>{
+
+      closeness += choice.score;
+      scoreText.textContent = closeness;
+
+      current++;
+      showStory();
+
+    });
+
+    choicesBox.appendChild(button);
+
+  });
+
+}
+
+// =================================
+// SHOW ENDING
+// =================================
+
+function showEnding() {
+
+  chapterTitle.textContent = "AKHIR CERITA";
+  chapterStat.textContent = "ENDING";
+  characterName.textContent = "Narator";
+
+  let endingText = "";
+  let expression = "happy";
+
+  if(closeness >= 43) {
+
+    endingText =
+      "Arthur dan Violet memilih untuk saling mengenal lebih jauh. Mereka sadar bahwa hubungan yang baik dibangun dari kejujuran, rasa percaya, dan usaha bersama. Mungkin, ini baru awal dari kisah indah mereka.";
+
+  } else if(closeness >= 28) {
+
+    endingText =
+      "Arthur dan Violet tetap dekat. Mereka belum tahu akan dibawa ke mana hubungan ini, tetapi keduanya sepakat untuk memberi waktu dan kesempatan pada cerita mereka.";
+
+  } else {
+
+    endingText =
+      "Arthur dan Violet belum menjadi lebih dari teman. Namun, pertemuan mereka tetap menjadi kenangan yang berarti. Tidak semua cerita harus berakhir dengan bersama.";
+
+    expression = "sad";
+
+  }
+
+  dialogText.textContent = endingText;
+
+  dialogBox.classList.remove("hidden");
+
+  setEnvironment("dawn");
+  setExpression(arthur,expression);
+  setExpression(violet,expression);
+
+  choicesBox.innerHTML = "";
+
+  // TOMBOL ULANGI CERITA
+  const restart = document.createElement("button");
+  restart.className = "choice";
+  restart.textContent = "ULANGI CERITA";
+
+  restart.addEventListener("click",()=>{
+
+    current = 0;
+    closeness = 0;
+
+    scoreText.textContent = "0";
+
+    showStory();
+
+  });
+
+  choicesBox.appendChild(restart);
+
+  // TOMBOL KEMBALI KE MENU
+  const back = document.createElement("button");
+  back.className = "choice";
+  back.textContent = "KEMBALI KE MENU";
+
+  back.addEventListener("click",()=>{
+
+    dialogBox.classList.add("hidden");
+    startScreen.classList.remove("hidden");
+
+    current = 0;
+    closeness = 0;
+
+    scoreText.textContent = "0";
+    chapterStat.textContent = "PROLOG";
+
+    setEnvironment("school");
+    setExpression(arthur,"neutral");
+    setExpression(violet,"neutral");
+
+  });
+
+  choicesBox.appendChild(back);
+
+}
+
+// =================================
+// START BUTTON
+// =================================
+
+document.getElementById("startButton").addEventListener("click",()=>{
+
+  current = 0;
+  closeness = 0;
+
+  scoreText.textContent = "0";
+
+  startScreen.classList.add("hidden");
+  dialogBox.classList.remove("hidden");
+
+  showStory();
+
+});
+
+// =================================
+// ANIMATION & RESIZE
+// =================================
+
+function animate() {
+  requestAnimationFrame(animate);
+
+  const time = Date.now()*0.001;
+
+  arthur.group.position.y = Math.sin(time*1.5)*0.035;
+  violet.group.position.y = Math.sin(time*1.5+1)*0.035;
+
+  arthur.group.rotation.y = Math.sin(time*0.5)*0.04;
+  violet.group.rotation.y = Math.sin(time*0.5+1)*0.04;
+
+  renderer.render(scene,camera);
+}
+
+window.addEventListener("resize",()=>{
+  camera.aspect = window.innerWidth/window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth,window.innerHeight);
+});
+
+setEnvironment("school");
+setExpression(arthur,"neutral");
+setExpression(violet,"neutral");
+animate();
+
+// =================================
+// BACKGROUND MUSIC SYSTEM
+// =================================
+
+const bgMusic = document.getElementById("bgMusic");
+const musicToggle = document.getElementById("musicToggle");
+const musicVolume = document.getElementById("musicVolume");
+
+bgMusic.volume = 0.3;
+
+// TOMBOL ON / OFF
+musicToggle.addEventListener("click", async () => {
+
+  if (bgMusic.paused) {
+
+    try {
+      await bgMusic.play();
+      musicToggle.textContent = "🎵 ON";
+    } catch (error) {
+      musicToggle.textContent = "🎵 OFF";
+      alert("Musik gagal diputar. Periksa lokasi dan nama file MP3!");
+      console.error("Music error:", error);
+    }
+
+  } else {
+
+    bgMusic.pause();
+    musicToggle.textContent = "🎵 OFF";
+
+  }
+
+});
+
+// PENGATUR VOLUME
+musicVolume.addEventListener("input", () => {
+  bgMusic.volume = musicVolume.value / 100;
+});
+
+</script>
+</body>
+</html>
